@@ -15,12 +15,12 @@ abstract class GenericRequestHandler<R> {
         val dataWrapper = DataWrapper<R>()
         makeRequest().enqueue(object : BaseApiCallback<R>() {
             override fun handleResponseData(data: Response<R>?) {
-                dataWrapper.data = data
+                dataWrapper.data = data?.body()
                 liveData.setValue(dataWrapper)
             }
 
             override fun handleError(response: Response<Response<R>>) {
-                dataWrapper.apiException = response.errorBody()
+//                dataWrapper.apiException = response.er
                 liveData.setValue(dataWrapper)
             }
 
