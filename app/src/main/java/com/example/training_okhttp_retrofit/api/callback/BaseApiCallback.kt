@@ -6,24 +6,31 @@ import retrofit2.Callback
 import retrofit2.Response
 
 
-abstract class BaseApiCallback<T> : Callback<Response<T>> {
+abstract class BaseApiCallback<T>(private val errorHandler: ApiErrorHandler) : Callback<T> {
 
-    override fun onResponse(call: Call<Response<T>>, response: Response<Response<T>>) {
-        when (response.body() != null) {
-            true -> handleResponseData(response.body())
-            else -> handleError(response)
+    override fun onResponse(call: Call<T>, response: Response<T>) {
+        val statusCode = StatusCode(response.code())
+        when (response.code()) {
+            in 200 until 209 ->
+                when (response.body() != null) {
+                    true -> handleResponseData(response.body(), statusCode)
+                }
+            else -> handleError(response, statusCode)
         }
     }
 
-    abstract protected fun handleResponseData(data: Response<T>?)
+    abstract protected fun handleResponseData(data: T?, statusCode: StatusCode)
 
-    abstract protected fun handleError(response: Response<Response<T>>)
+    protected fun handleError(response: Response<T>, statusCode: StatusCode) {
+        handleException(errorHandler.getExceptionType(response), statusCode)
+        Log.d("Code", " " + response.code()  )
+    }
 
-    abstract protected fun handleException(t: Exception)
+    abstract protected fun handleException(t: Exception, statusCode: StatusCode)
 
-    override fun onFailure(call: Call<Response<T>>, t: Throwable) {
+    override fun onFailure(call: Call<T>, t: Throwable) {
         if (t is java.lang.Exception) {
-            handleException(t)
+            handleException(t, StatusCode(-1))
         } else {
             Log.d("onFailure", "Error")
         }

@@ -1,26 +1,30 @@
 package com.example.training_okhttp_retrofit
 
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.training_okhttp_retrofit.adapter.NoteAdapter
-import com.example.training_okhttp_retrofit.api.client.APIClient
+import com.example.training_okhttp_retrofit.api.callback.ApiObserver
+import com.example.training_okhttp_retrofit.api.callback.MockioError
 import com.example.training_okhttp_retrofit.api.model.ListNoteReponse
 import com.example.training_okhttp_retrofit.api.model.Note
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.example.training_okhttp_retrofit.viewmodel.NoteViewModel
 
 class MainActivity : AppCompatActivity() {
 
     var mListNoteRv: RecyclerView? = null
     var mNoteList: List<Note> = listOf()
     lateinit var mNoteAdapter: NoteAdapter
+
+    private val mNoteViewModel by lazy {
+        ViewModelProviders.of(this).get(NoteViewModel::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,20 +60,30 @@ class MainActivity : AppCompatActivity() {
         return selected
     }
 
-    private fun refreshList() {
-        APIClient.getAllNote()?.enqueue(object : Callback<ListNoteReponse> {
-
-            override fun onFailure(call: Call<ListNoteReponse>, t: Throwable) {
-
+    private fun userErrorHanlder(ex: Exception) {
+        when (ex) {
+            is MockioError.ErrorConfig.NetworkException -> {
+                Toast.makeText(this@MainActivity, ex.message, Toast.LENGTH_LONG).show()
+            }
+            is MockioError.ErrorConfig.GitHubException -> {
+                Toast.makeText(this@MainActivity, ex.message, Toast.LENGTH_LONG).show()
             }
 
-            override fun onResponse(call: Call<ListNoteReponse>, response: Response<ListNoteReponse>) {
-                if (response.isSuccessful) {
-                    Log.d("Call api", "Successfully")
-                    mNoteAdapter.updateListNote(response.body()?.listNote)
+            is MockioError.ErrorConfig.ForbiddenException -> {
+                Toast.makeText(this@MainActivity, ex.message, Toast.LENGTH_LONG).show()
+            }
+            else -> Toast.makeText(this@MainActivity, "Oops! Something went wrong.", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun refreshList() {
+        mNoteViewModel.loadListNote()?.observe(this, object : ApiObserver<ListNoteReponse>(::userErrorHanlder) {
+            override fun onSuccess(data: ListNoteReponse) {
+                if (!data.listNote.isEmpty()) {
+                    Toast.makeText(applicationContext, "List is loaded by network !! ", Toast.LENGTH_SHORT).show()
+                    mNoteAdapter.updateListNote(data.listNote)
                 }
             }
-
         })
     }
 
