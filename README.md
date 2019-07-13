@@ -43,23 +43,39 @@ Simple Framework: com.squareup.retrofit2:converter-simpleframework
 
 Một trong những việc rất nhàn chán khi phát triển ứng dụng trên nền tảng Android đó là xử lý kết nối mạng, bắt lỗi và exception, kiểm soát kích thước file download và thời gian download file đó...vv.
 
+Tuy nhiên có một thư viện giúp chúng ta giải quyết các vấn đề đó một cách nhanh gọn, đó là OkHttp.
+
+OkHttp sẽ giúp ta
+
+-Kiểm soát kết nối tới server
+
+-Kiểm soát các kết nối không tốt và thử kết nối lại khi có thể
+
+-Nó sẽ thử thay thế server IP address nếu kết nối tới một IP nào đó bị thất bại vào IP thay thế được chuẩn bị sẵn
+
+-Giảm độ trễ của request, giảm size của file cần download
+
+-Tránh lặp lại các request đã được hoàn thành
+
 Interceptor có nghĩa là “làm can thiệp một cái gì đó trong việc đến được đích đến của nó”, tương tự như nghĩa của nó Interceptor can thiệp vào một request, thay đổi request đó và sau đó gửi lại đến điêm đến của nó (server).
 
 Các Interceptor là để quan sát, điều chỉnh và có khả năng chặn các request và những phản hồi. Thông thường các Interceptor thực hiện thêm, xóa , chuyển đổi các Headers trên request hoặc trên các phản hồi được trả về (từ server).
 
-### b. Tác dụng
+###b. Các kiểu Interceptor :
+Interceptor về căn bản được chia làm 2 loại :
 
-- Kiểm soát kết nối tới server
+Application Interceptor: Đây là là những interceptor có cấp độ cao được sử dụng để chặn các các request lên hoặc response phản hồi về. Chúng thường được sử dụng để viết lại các header/query ở cả request và response. Những interceptor chắc chắn được gọi một lần ngay cả khi phản hồi được nạp từ bộ lưu trữ (cache).
 
-- Kiểm soát các kết nối không tốt và thử kết nối lại khi có thể
+Network Interceptor : Đây là những interceptor có cấp độ thấp hơn được sử dụng để theo dõi các request và response được truyền quan mạng. Nó thì rất hữu ích để theo dõi việc redirect, retry và tạo ra truy cập đến những chi tiết của request. Chúng không được gọi nếu response đã được lưu trữ.
+###.c.Tác dụng
 
-- Nó sẽ thử thay thế server IP address nếu kết nối tới một IP nào đó bị thất bại vào IP thay thế được chuẩn bị sẵn
+- Ghi lại các log của Request và Response
 
-- Giảm độ trễ của request, giảm size của file cần download
+-	Sửa lại Request – Adding/ Removing Header/Body
 
-- Tránh lặp lại các request đã được hoàn thành
+- Rewriting Body của Response
 
-### c. Những phần sẽ tìm hiểu
+### c. Tác dụng
 
 - **Logging Interceptor**: log ra các lịch sử và tình trạng của các request/response. Những logs này sẽ cho chúng ta biết về headers, request/response body và chi tiết quan trọng cho việc debug và sửa các lỗi
 
