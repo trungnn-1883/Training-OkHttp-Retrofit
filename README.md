@@ -35,7 +35,7 @@ Simple Framework: com.squareup.retrofit2:converter-simpleframework
 
 - Retrofit nhanh hơn rất nhiều so với việc sử dụng Volley, AysncTask
 
-<img src="image/s1.png">
+<img src="img/r1.png">
 
 ### 3. OkHttp Interceptor
 
