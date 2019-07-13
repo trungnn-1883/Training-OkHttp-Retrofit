@@ -234,12 +234,47 @@ authToken = Credentials.basic("trung", "@@1122")
 <img src="img/r11.png">
 
 
+-------------------------------------------------------
 
+Call factory dùng LiveData
 
+Khi máy khách OkHttp nhận được phản hồi từ máy chủ, nó sẽ chuyển phản hồi trở lại Retrofit. 
 
+Retrofit sau đó thực hiện phép thuật của nó: nó đẩy các byte phản hồi vô nghĩa thông qua các bộ chuyển đổi (adapter) và kết thúc nó thành một phản hồi có thể sử dụng được với các đối tượng Java có ý nghĩa. Quá trình sử dụng nhiều tài nguyên này vẫn được thực hiện trên một luồng nền. Cuối cùng, khi mọi thứ đã sẵn sàng, Retrofit cần trả kết quả về luồng UI của ứng dụng Android của bạn.
 
+Theo mặc định, gói trả lại này được thực hiện dưới dạng Call <TypedResponseClass>. Hành động trả về từ background, nhận và chuẩn bị kết quả, cho luồng giao diện người dùng Android là một bộ call adapter
 
+Chuyển được sang nhiều dạng
 
+```
+dependencies {  
+    // Retrofit
+    compile 'com.squareup.retrofit2:retrofit:2.5.0'
+
+    // For example, add call adapter for RxJava 2
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.5.0'
+
+    // or alternatively:
+    implementation 'com.squareup.retrofit2:adapter-rxjava:2.5.0'
+    implementation 'com.squareup.retrofit2:adapter-guava:2.5.0'
+    implementation 'com.squareup.retrofit2:adapter-java8:2.5.0'
+    
+    // For LiveData
+     implementation "com.github.leonardoxh:retrofit2-livedata-adapter:1.1.2"
+}
+```
+
+Được add vào qua hàm: addCallAdapterFactory()
+
+LiveData: .addCallAdapterFactory(LiveDataCallAdapterFactory.create())
+
+Api sẽ có dạng như sau
+```
+ public interface SuperService {
+    @GET("/pimba") LiveData<Resource<Pimba>> getPimba();
+    @GET("/pimba") LiveData<Response<Resource<Pimba>>> getPimbas();
+}
+```
 
 
 
