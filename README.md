@@ -79,9 +79,8 @@ Trong HttpLoggingInterceptor.Level có các param :
 
 - SSL Configuration: mặc định thì Retrofit không kết nối được tới API mà được bảo vệ vs SSL, vậy nên ta cần phải cấu hình cho nó.
 
-### 4.
+### 4. Hiểu về enqueue() và execute()
 
-Hiểu về enqueue()
 
 enqueue() gửi yêu cầu và thông báo cho ứng dụng của bạn một cách không đồng bộ với một hàm callback khi có một phản hồi. Vì yêu cầu này là không đồng bộ, nên Retrofit xử lý việc thực thi trên một tác vụ chạy nền vì thế mà Giao diện Người dùng không bị ảnh hưởng.
 
@@ -93,7 +92,7 @@ enqueue() gửi yêu cầu và thông báo cho ứng dụng của bạn một c�
 
 Các yêu cầu đồng bộ
 
-Để thực hiện một yêu cầu đồng bộ, bạn có thể sử dụng phương thức execute() trong một đối tượng Call. Nhưng lưu ý rằng các phương thức đồng bộ trên tác vụ chính/UI sẽ chặn bất kỳ hành động nào của người dùng. Vì vậy, đừng thực hiện các phương thức đồng bộ trên tác vụ chính/UI của Android! Thay vào đó, hãy chạy chúng trên một tác vụ nền.
+Để thực hiện một yêu cầu đồng bộ, bạn có thể sử dụng phương thức **execute()** trong một đối tượng Call. Nhưng lưu ý rằng các phương thức đồng bộ trên tác vụ chính/UI sẽ chặn bất kỳ hành động nào của người dùng. Vì vậy, đừng thực hiện các phương thức đồng bộ trên tác vụ chính/UI của Android! Thay vào đó, hãy chạy chúng trên một tác vụ nền.
 
 ### 5. Xử lý lỗi với LiveData và Retrofit
 
@@ -109,6 +108,25 @@ Vấn đề hay xảy ra là phải kiểm tra lại nhiều lần mỗi khi nh�
 
 ==> Cần có code base để xử lý các vấn đề này
 
+### 6.Repository pattern
+
+Repository Pattern là lớp trung gian giữa tầng Business Logic và Data Access, giúp cho việc truy cập dữ liệu chặt chẽ và bảo mật hơn.
+
+Thông thường thì các phần truy xuất, giao tiếp với database năm rải rác ở trong code, khi bạn muốn thực hiện một thao tác lên database thì phải tìm trong code cũng như tìm các thuộc tính trong bảng để xử lý. Điều này gây lãng phí thời gian và công sức rất nhiều.
+
+Với Repository design pattern, thì việc thay đổi ở code sẽ không ảnh hưởng quá nhiều công sức chúng ra chỉnh sửa.
+
+ Một số lý do chung ta nên sử dụng Repository Pattern:
+
+- Một nơi duy nhất để thay đổi quyền truy cập dữ liệu cũng như xử lý dữ liệu.
+
+- Một nơi duy nhất chịu trách nhiệm cho việc mapping các bảng vào object.
+
+- Tăng tính bảo mật và rõ ràng cho code.
+
+- Rất dễ dàng để thay thế một Repository với một implementation giả cho việc testing, vì vậy bạn không cần chuẩn bị một cơ sở dữ liệu có sẵn.
+
+Ứng dụng trong Android là dữ liệu sẽ được load lên cho view mà chỉ cần gọi đến repository, repo sẽ tự xác định nguồn dữ liệu nào có để load lên.
 
 ## II. Code
 
