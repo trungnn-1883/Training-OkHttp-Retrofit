@@ -144,6 +144,8 @@ Với Repository design pattern, thì việc thay đổi ở code sẽ không �
 
 Ứng dụng trong Android là dữ liệu sẽ được load lên cho view mà chỉ cần gọi đến repository, repo sẽ tự xác định nguồn dữ liệu nào có để load lên.
 
+<img src="img/repo.png">
+
 ## II. Code
 
 ### 1. Logging Interceptor
