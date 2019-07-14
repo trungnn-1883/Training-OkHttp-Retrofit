@@ -45,7 +45,7 @@ Một trong những việc rất nhàn chán khi phát triển ứng dụng trê
 
 Tuy nhiên có một thư viện giúp chúng ta giải quyết các vấn đề đó một cách nhanh gọn, đó là OkHttp.
 
-OkHttp sẽ giúp ta
+**OkHttp** sẽ giúp ta
 
 -Kiểm soát kết nối tới server
 
@@ -61,7 +61,7 @@ Interceptor có nghĩa là “làm can thiệp một cái gì đó trong việc 
 
 Các Interceptor là để quan sát, điều chỉnh và có khả năng chặn các request và những phản hồi. Thông thường các Interceptor thực hiện thêm, xóa , chuyển đổi các Headers trên request hoặc trên các phản hồi được trả về (từ server).
 
-###b. Các kiểu Interceptor :
+### b. Các kiểu Interceptor :
 Interceptor về căn bản được chia làm 2 loại :
 
 Application Interceptor: Đây là là những interceptor có cấp độ cao được sử dụng để chặn các các request lên hoặc response phản hồi về. Chúng thường được sử dụng để viết lại các header/query ở cả request và response. Những interceptor chắc chắn được gọi một lần ngay cả khi phản hồi được nạp từ bộ lưu trữ (cache).
@@ -145,7 +145,6 @@ Với Repository design pattern, thì việc thay đổi ở code sẽ không �
 Ứng dụng trong Android là dữ liệu sẽ được load lên cho view mà chỉ cần gọi đến repository, repo sẽ tự xác định nguồn dữ liệu nào có để load lên.
 
 ## II. Code
-
 
 ### 1. Logging Interceptor
 
@@ -275,6 +274,20 @@ Api sẽ có dạng như sau
     @GET("/pimba") LiveData<Response<Resource<Pimba>>> getPimbas();
 }
 ```
+
+----------------------------------------------------------
+
+Cache data with OkHttp
+
+- Đơn giản chỉ cần code:
+
+```
+int cacheSize = 10 * 1024 * 1024; // 10MB
+OkHttpClient.Builder builder = new OkHttpClient.Builder()
+        .cache(new Cache(context.getCacheDir(), cacheSize) 
+        ....
+```        
+Sau đó ta không cần làm gì thêm, nó sẽ tự cache
 
 
 
